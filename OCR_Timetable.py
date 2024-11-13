@@ -96,7 +96,6 @@ class TimetableExtractor:
         current_hour = 9
         current_minute = 0
 
-        # 시간표 끝나는 시간이 18:00이라 가정
         while current_hour < 24:
             time_str = f"{current_hour:02}:{current_minute:02}"
             self.time_dict[int(current_y_position)] = time_str
