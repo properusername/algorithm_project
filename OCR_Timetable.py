@@ -5,7 +5,7 @@ import pytesseract
 
 class TimetableExtractor:
     def __init__(self, image_file):
-        #시간표 이미지
+        # 시간표 이미지
         self.image_file = cv2.imread(image_file)
         self.width = self.image_file.shape[1]
 
@@ -27,7 +27,7 @@ class TimetableExtractor:
         self.result = {'월': [], '화': [], '수': [], '목': [], '금': []}
         self.time_dict = {}  # 시간 매핑 딕셔너리
 
-    #각 색상 윤곽 추출 함수
+    # 각 색상 윤곽 추출 함수
     def getlectrue(self):
         hsv = cv2.cvtColor(self.image_file, cv2.COLOR_BGR2HSV)
 
@@ -59,7 +59,7 @@ class TimetableExtractor:
                 print(self.cropped_images[day][i][2])
                 #image.show()
 
-    #이미지에서 시간 당 픽셀 구하는 함수
+    # 이미지에서 시간 당 픽셀 구하는 함수
     def get_pixel_per_hour(self):
         left_image = self.image_file[:,:int(self.width*0.1)]
 
@@ -81,7 +81,7 @@ class TimetableExtractor:
 
         return abs(time_y_positions[1]-time_y_positions[0]), time_y_positions[0]
     
-   # 타임 딕셔너리에 데이터 추가 함수
+    # 타임 딕셔너리에 데이터 추가 함수
     def get_time_dictionary(self):
         # 픽셀 당 시간 변환 비율과 시작 픽셀 위치 가져오기
         pixel_per_hour, start_y_position = self.get_pixel_per_hour()
@@ -109,16 +109,25 @@ class TimetableExtractor:
             # 다음 y 위치
             current_y_position += pixels_per_interval
 
-
-    # 각 요일에 대해 강의 시작/종료 시간 저장
-    def save_lecture_times(self):
+    # 각 요일에 대해 강의 시작/종료 시간과 강의명 저장
+    def save_lecture_data(self):
         # 시간 변환 딕셔너리가 비어 있으면 생성
         if not self.time_dict:
             self.get_time_dictionary()
 
         # 각 요일에 대해 강의 시작/종료 시간 저장
         for day in self.days:
-            for _, y, y_end in self.cropped_images[day]:
+            for image, y, y_end in self.cropped_images[day]:
+                # 강의명 추출 (이미지 전처리) -> 인식률 높이기 위해 개선 필요
+                # 이미지를 흑백으로 변환
+                gray = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
+                
+                # 텍스트 강조: 흰색 텍스트를 검은 배경으로 반전
+                _, inverted = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
+
+                # OCR 수행 (한국어 인식 활성화)
+                text = pytesseract.image_to_string(inverted, config='--psm 6 -l kor').strip()
+                
                 # 가장 가까운 시작 시간 및 종료 시간 찾기
                 start_y = min(self.time_dict.keys(), key=lambda key: abs(key - y))
                 end_y = min(self.time_dict.keys(), key=lambda key: abs(key - y_end))
@@ -127,13 +136,12 @@ class TimetableExtractor:
                 start_time = self.time_dict[start_y]
                 end_time = self.time_dict[end_y]
                 
-                # 각 요일별로 시작/종료 시간 추가
-                self.result[day].append({'start': start_time, 'end': end_time})
-        
+                # 각 요일별로 시작/종료 시간과 강의명 추가
+                self.result[day].append({'start': start_time, 'end': end_time, 'lecture': text})
 
 test = TimetableExtractor('timetable.jpg')
 test.getlectrue()
 #test.show_extracted_images()
 test.get_time_dictionary()
-test.save_lecture_times()
+test.save_lecture_data()
 print(test.result)
