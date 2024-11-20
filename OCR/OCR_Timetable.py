@@ -151,7 +151,7 @@ class TimetableExtractor:
                 # 각 요일별로 시작/종료 시간과 강의명 추가
                 self.result.append([day, course_name, start_time, end_time, course_number])
 
-test = TimetableExtractor('timetable.jpg')
+test = TimetableExtractor('../images/timetable.jpg')
 test.getlectrue()
 #test.show_extracted_images()
 test.get_time_dictionary()
