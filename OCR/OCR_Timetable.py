@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import pytesseract
+import re
 
 class TimetableExtractor:
     def __init__(self, image_file):
@@ -21,10 +22,10 @@ class TimetableExtractor:
             "연두": ([40, 100, 100], [70, 255, 255]),        
             "빨강": ([0, 100, 100], [9, 255, 255]),         
             "노랑": ([20, 100, 100], [39, 255, 255]),        
-            "청록": ([80, 100, 100], [100, 255, 255])        
+            "청록": ([80, 100, 100], [100, 255, 255])  
         }
 
-        self.result = {'월': [], '화': [], '수': [], '목': [], '금': []}
+        self.result = [] #최종 데이터 저장 리스트
         self.time_dict = {}  # 시간 매핑 딕셔너리
 
     # 각 색상 윤곽 추출 함수
@@ -97,7 +98,7 @@ class TimetableExtractor:
         current_minute = 0
 
         while current_hour < 24:
-            time_str = f"{current_hour:02}:{current_minute:02}"
+            time_str = f"{current_hour:02}{current_minute:02}"
             self.time_dict[int(current_y_position)] = time_str
 
             # 15분 증가
@@ -135,9 +136,20 @@ class TimetableExtractor:
                 # 시작 시간과 종료 시간을 문자열로
                 start_time = self.time_dict[start_y]
                 end_time = self.time_dict[end_y]
-                
+
+                text = text.replace('\n','')
+                text = text.replace(' ','')
+                match = re.search(r'\d',text)
+
+                course_name = text
+                course_number = ''
+
+                if match:
+                    course_name = text[:match.start()]  # 숫자 이전 부분
+                    course_number = text[match.start():]  # 숫자 이후 부분
+
                 # 각 요일별로 시작/종료 시간과 강의명 추가
-                self.result[day].append({'start': start_time, 'end': end_time, 'lecture': text})
+                self.result.append([day, course_name, start_time, end_time, course_number])
 
 test = TimetableExtractor('timetable.jpg')
 test.getlectrue()

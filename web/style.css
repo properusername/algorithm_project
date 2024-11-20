@@ -1,0 +1,62 @@
+.main-contents {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: white
+}
+
+/* 네비바 왼쪽 여백 스타일(수정 필요)*/
+.extra-margin {
+    padding-left: 3rem;  /* 왼쪽 여백 48px */
+  }
+
+/* 대시선 외곽 박스 스타일 (투명도 추가) */
+.outer-box {
+    padding: 20px;
+    border: 2px dashed rgba(0, 123, 255, 0.5); /* 투명한 대시선 (0.5는 50% 투명) */
+    border-radius: 15px; /* 모서리 둥글게 */
+    background-color: rgba(255, 255, 255, 0.3); /* 약간 투명한 흰색 배경 */
+}
+
+/* 업로드 박스 스타일 */
+.upload-box {
+    width: 80vw;
+    height: 70vh;
+    padding: 20px;
+    border: 2px dashed #007BFF;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.upload-box:hover {
+    background-color: #f9f9f9;
+}
+
+.upload-box p {
+    margin: 0;
+    font-size: 25px;
+    color: #007BFF;
+}
+
+.image-preview {
+    margin-top: 15px;
+    display: none;
+}
+
+.image-preview img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+input[type="file"] {
+    display: none; /* 파일 선택 input 숨기기 */
+}
