@@ -1,6 +1,7 @@
 .main-contents {
     font-family: Arial, sans-serif;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -48,15 +49,21 @@
 }
 
 .image-preview {
+    max-width: 100%;
+    max-height: 100%;
     margin-top: 15px;
     display: none;
 }
 
 .image-preview img {
     max-width: 100%;
-    border-radius: 8px;
+    max-height: 100%;
+    object-fit: contain; /* 이미지 비율 유지 */
+    position: relative;
 }
 
 input[type="file"] {
     display: none; /* 파일 선택 input 숨기기 */
 }
+
+/*업로드 버튼 css 추가필요*/

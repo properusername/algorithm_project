@@ -2,10 +2,11 @@ const uploadBox = document.getElementById('upload-box');
 const imageInput = document.getElementById('image-upload');
 const imagePreview = document.getElementById('image-preview');
 const previewImage = document.getElementById('preview-image');
+const button = document.getElementById("upload-button");
 
 // 업로드 박스를 클릭하면 파일 선택 창 열기
 uploadBox.addEventListener('click', function() {
-    imageInput.click();
+   imageInput.click();
 });
 
 // 파일 선택 시 미리보기 표시
@@ -38,12 +39,35 @@ uploadBox.addEventListener('drop', function(event) {
     }
 });
 
+button.addEventListener("click", () => {
+    const file = imageInput.files[0];
+    const formData = new FormData;
+    formData.append('file',file);
+
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            document.getElementById('result').innerText = data.error;
+        } else {
+            document.getElementById('result').innerText = `Score: ${data.score}`;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('result').innerText = 'An error occurred';
+    });
+});
+
 // 이미지 미리보기 함수
 function displayImagePreview(file) {
     const reader = new FileReader();
     reader.onload = function(e) {
         previewImage.src = e.target.result;
-        imagePreview.style.display = 'block';
+        imagePreview.style.display = 'flex';
         changeUploadBoxStyle();
     };
     reader.readAsDataURL(file);
@@ -51,8 +75,9 @@ function displayImagePreview(file) {
 
 // 업로드 박스 스타일 변경 함수 (이미지 업로드 후)
 function changeUploadBoxStyle() {
-    uploadBox.style.display = 'block';
-    uploadBox.style.justifyContent = 'flex-start'; // 배경색을 연두색으로 변경
-    uploadBox.style.alignItems = "stretch";
+    uploadBox.style.display = 'flex';
+    uploadBox.style.justifyContent = 'center';
+    uploadBox.style.alignItems = "center";
     uploadBox.querySelector('p').style.display = "None";
 }
+

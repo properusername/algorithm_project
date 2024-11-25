@@ -7,7 +7,7 @@ import re
 class TimetableExtractor:
     def __init__(self, image_file):
         # 시간표 이미지
-        self.image_file = cv2.imread(image_file)
+        self.image_file = cv2.imdecode(image_file, cv2.IMREAD_COLOR)
         self.width = self.image_file.shape[1]
 
         # 요일별로 이미지를 저장할 딕셔너리
