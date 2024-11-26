@@ -18,7 +18,7 @@ class TimetableExtractor:
         self.color_ranges = {
             "파랑": ([100, 100, 100], [130, 255, 255]),     
             "보라": ([130, 100, 100], [160, 255, 255]),      
-            "주황": ([10, 100, 150], [19, 255, 255]),         
+            "주황": ([10, 100, 150], [17, 255, 255]),         
             "연두": ([40, 100, 100], [70, 255, 255]),        
             "빨강": ([0, 100, 100], [9, 255, 255]),         
             "노랑": ([20, 100, 100], [39, 255, 255]),        
@@ -66,7 +66,7 @@ class TimetableExtractor:
 
         # pytesseract를 이용하여 이미지에서 텍스트 인식
         gray = cv2.cvtColor(left_image, cv2.COLOR_BGR2GRAY)
-        thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY_INV)[1]
+        thresh = cv2.threshold(gray, 130, 255, cv2.THRESH_BINARY_INV)[1]
 
         # 시간 텍스트 추출
         custom_config = r'--oem 3 --psm 6'
@@ -151,9 +151,9 @@ class TimetableExtractor:
                 # 각 요일별로 시작/종료 시간과 강의명 추가
                 self.result.append([day, course_name, start_time, end_time, course_number])
 
-test = TimetableExtractor('../images/timetable.jpg')
-test.getlectrue()
-#test.show_extracted_images()
-test.get_time_dictionary()
-test.save_lecture_data()
-print(test.result)
+# test = TimetableExtractor('../images/timetable.jpg')
+# test.getlectrue()
+# #test.show_extracted_images()
+# test.get_time_dictionary()
+# test.save_lecture_data()
+# print(test.result)
